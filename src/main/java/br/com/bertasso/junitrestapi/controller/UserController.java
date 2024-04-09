@@ -1,10 +1,8 @@
 package br.com.bertasso.junitrestapi.controller;
 
 
-import br.com.bertasso.junitrestapi.domain.User;
 import br.com.bertasso.junitrestapi.domain.dto.UserDTO;
 import br.com.bertasso.junitrestapi.service.UserService;
-import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +17,13 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/users")
 public class UserController {
 
+    public static final String ID = "/{id}";
     @Autowired
     private UserService userService;
     @Autowired
     private ModelMapper mapper;
 
-    @GetMapping(value="/id")
+    @GetMapping(value=ID)
     public ResponseEntity<UserDTO> findById(@PathVariable Integer id) {
         return ResponseEntity.ok().body(mapper.map(userService.findById(id), UserDTO.class));
     }
@@ -43,10 +42,17 @@ public class UserController {
         return ResponseEntity.created(uri).build();
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = ID)
     public ResponseEntity<UserDTO> updateUser(@PathVariable Integer id, @RequestBody UserDTO obj) {
         obj.setId(id);
         return ResponseEntity.ok().body(mapper.map(userService.updateUser(obj), UserDTO.class));
+    }
+
+    @DeleteMapping(value="/{id}")
+    public ResponseEntity<UserDTO> deleteUser(@PathVariable Integer id) {
+        userService.deleteUser(id);
+
+        return ResponseEntity.noContent().build();
     }
 
 }
