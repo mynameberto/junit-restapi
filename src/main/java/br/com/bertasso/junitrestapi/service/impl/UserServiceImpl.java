@@ -3,6 +3,7 @@ package br.com.bertasso.junitrestapi.service.impl;
 import br.com.bertasso.junitrestapi.domain.User;
 import br.com.bertasso.junitrestapi.repository.UserRepository;
 import br.com.bertasso.junitrestapi.service.UserService;
+import br.com.bertasso.junitrestapi.service.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Integer id) {
         Optional<User> obj = userRepository.findById(id);
-        return obj.orElse(null);
+        return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado."));
     }
 }
