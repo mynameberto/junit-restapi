@@ -16,11 +16,13 @@ public class LocalConfig {
     @Autowired
     private UserRepository repository;
 
-    @Bean
-    public void startDB() {
+
+    public Object startDB() {
         User u1 = new User(null, "Pedro", "pedro@pedro.com", "123");
         User u2 = new User(null, "Victor", "victor@victor.com", "123");
 
         repository.saveAll(List.of(u1, u2));
+
+        return new Object();
     }
 }
