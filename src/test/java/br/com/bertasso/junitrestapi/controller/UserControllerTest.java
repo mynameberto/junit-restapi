@@ -78,7 +78,13 @@ class UserControllerTest {
     }
 
     @Test
-    void addUser() {
+    void whenAddThenReturnCreated() {
+        when(service.addUser(any())).thenReturn(user);
+
+        ResponseEntity<UserDTO> response = controller.addUser(userDTO);
+
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
