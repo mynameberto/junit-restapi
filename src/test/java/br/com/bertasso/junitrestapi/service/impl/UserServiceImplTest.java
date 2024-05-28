@@ -77,6 +77,17 @@ class UserServiceImplTest {
 
     @Test
     void whenAddThenReturnSucess() {
+        when(repository.save(any())).thenReturn(user);
+
+        User response = service.addUser(userDTO);
+
+        assertNotNull(response);
+        assertEquals(User.class, response.getClass());
+        assertEquals(ID, response.getId());
+    }
+
+    @Test
+    void whenAddThenReturnDataIntegrityViolationException() {
         when(repository.findByEmail(anyString())).thenReturn(optionalUser);
 
         try {
@@ -88,21 +99,15 @@ class UserServiceImplTest {
     }
 
     @Test
-    void whenAddThenReturnDataIntegrityViolationException() {
+    void whenUpdateThenReturnSucess() {
         when(repository.save(any())).thenReturn(user);
 
-        User response = service.addUser(userDTO);
+        User response = service.updateUser(userDTO);
 
         assertNotNull(response);
         assertEquals(User.class, response.getClass());
         assertEquals(ID, response.getId());
     }
-
-
-    @Test
-    void updateUser() {
-    }
-
     @Test
     void deleteUser() {
     }
