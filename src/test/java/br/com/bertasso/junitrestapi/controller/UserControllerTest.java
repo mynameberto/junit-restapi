@@ -43,7 +43,7 @@ class UserControllerTest {
     }
 
     @Test
-    void whenFindByIdThenReturnSucess() {
+    void whenFindByIdThenReturnSuccess() {
         when(service.findById(anyInt())).thenReturn(user);
         when(mapper.map(any(), any())).thenReturn(userDTO);
 
