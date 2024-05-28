@@ -5,6 +5,7 @@ import br.com.bertasso.junitrestapi.domain.dto.UserDTO;
 import br.com.bertasso.junitrestapi.repository.UserRepository;
 import br.com.bertasso.junitrestapi.service.UserService;
 import br.com.bertasso.junitrestapi.service.impl.UserServiceImpl;
+import jakarta.persistence.Id;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -23,7 +24,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class UserControllerTest {
@@ -89,11 +90,32 @@ class UserControllerTest {
 
     @Test
     void updateUser() {
+        when(service.updateUser(any())).thenReturn(user);
+        when(mapper.map(any(), any())).thenReturn(userDTO);
+
+        ResponseEntity<UserDTO> response = controller.updateUser(ID, userDTO);
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(UserDTO.class, response.getBody().getClass());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertEquals(ID, response.getBody().getId());
     }
 
     @Test
-    void deleteUser() {
+    void whenDeleteThenReturnSuccess() {
+        doNothing().when(service).deleteUser(anyInt());
+
+        ResponseEntity<UserDTO> response = controller.deleteUser(ID);
+
+        assertNotNull(response);
+        assertEquals(ResponseEntity.class, response.getClass());
+        verify(service, times(1)).deleteUser(anyInt());
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
+
     private void startUser() {
         user = new User(ID, NAME, MAIL, PASSWORD);
         userDTO = new UserDTO(ID, NAME, MAIL, PASSWORD);
