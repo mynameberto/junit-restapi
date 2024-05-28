@@ -3,6 +3,7 @@ package br.com.bertasso.junitrestapi.service.impl;
 import br.com.bertasso.junitrestapi.domain.User;
 import br.com.bertasso.junitrestapi.domain.dto.UserDTO;
 import br.com.bertasso.junitrestapi.repository.UserRepository;
+import br.com.bertasso.junitrestapi.service.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -45,6 +46,18 @@ class UserServiceImplTest {
         assertNotNull(response);
         assertEquals(User.class, response.getClass());
         assertEquals(ID, response.getId());
+    }
+
+    @Test
+    void whenFindByIDThenReturnObjectNotFoundException() {
+        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException("Objeto não encontrado."));
+
+        try {
+            service.findById(ID);
+        } catch (Exception e) {
+            assertEquals(ObjectNotFoundException.class, e.getClass());
+            assertEquals("Objeto não encontrado.", e.getMessage());
+        }
     }
 
     @Test
