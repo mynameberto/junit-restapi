@@ -1,5 +1,6 @@
 package br.com.bertasso.junitrestapi.controller.exceptions;
 
+import br.com.bertasso.junitrestapi.service.exception.DataIntegratyViolationException;
 import br.com.bertasso.junitrestapi.service.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,5 +40,17 @@ class ResourceExceptionHandlerTest {
 
     @Test
     void dataIntegratyViolation() {
+        ResponseEntity<StandardError> response = exceptionHandler
+                .dataIntegratyViolation(
+                        new DataIntegratyViolationException("E-mail já cadastrado"),
+                        new MockHttpServletRequest());
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(StandardError.class, response.getBody().getClass());
+        assertEquals(400, response.getBody().getStatus());
+
     }
 }
