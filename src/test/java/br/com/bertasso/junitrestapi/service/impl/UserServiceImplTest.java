@@ -3,6 +3,7 @@ package br.com.bertasso.junitrestapi.service.impl;
 import br.com.bertasso.junitrestapi.domain.User;
 import br.com.bertasso.junitrestapi.domain.dto.UserDTO;
 import br.com.bertasso.junitrestapi.repository.UserRepository;
+import br.com.bertasso.junitrestapi.service.exception.DataIntegratyViolationException;
 import br.com.bertasso.junitrestapi.service.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -75,8 +76,28 @@ class UserServiceImplTest {
     }
 
     @Test
-    void addUser() {
+    void whenAddThenReturnSucess() {
+        when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+
+        try {
+            optionalUser.get().setId(2);
+            service.addUser(userDTO);
+        } catch (Exception ex) {
+            assertEquals(DataIntegratyViolationException.class, ex.getClass());
+        }
     }
+
+    @Test
+    void whenAddThenReturnDataIntegrityViolationException() {
+        when(repository.save(any())).thenReturn(user);
+
+        User response = service.addUser(userDTO);
+
+        assertNotNull(response);
+        assertEquals(User.class, response.getClass());
+        assertEquals(ID, response.getId());
+    }
+
 
     @Test
     void updateUser() {
